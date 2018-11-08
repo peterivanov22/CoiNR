@@ -45,6 +45,8 @@ func (b *Block)calculatehash() string {
 
 	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PreviousHash
 
+	// I looked it up, this is one of two built-in hash functions in the go standard crypto lib.
+	// This one seems good.
 	hasher := sha256.New()
 
 	hasher.Write([]byte(hashString))
