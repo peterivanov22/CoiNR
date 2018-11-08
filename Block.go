@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// Block struct
+
 type Block struct {
 
 	Index int
@@ -16,6 +18,8 @@ type Block struct {
 	PreviousHash string
 }
 
+
+// validates the block.  Usage is block.validate()
 
 func (b *Block) validate(previous *Block) bool {
 
@@ -35,6 +39,8 @@ func (b *Block) validate(previous *Block) bool {
 
 }
 
+//calculates the hash for the block.  Usage is block.calculatehash()
+
 func (b *Block)calculatehash() string {
 
 	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PreviousHash
@@ -48,6 +54,8 @@ func (b *Block)calculatehash() string {
 	return hex.EncodeToString(hashed)
 
 }
+
+// generates a new block from the previous block and the BPM.  Usage is var newBlock = generateBlock(*oldBlock, bpm)
 
 func generateBlock(prev *Block, BPM int) Block {
 
