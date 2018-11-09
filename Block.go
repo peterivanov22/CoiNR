@@ -1,29 +1,33 @@
 package CoiNR
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"github.com/libp2p/go-libp2p-crypto"
+	"github.com/libp2p/go-libp2p-host"
+	"io"
 	"strconv"
 	"time"
+
+	mrand "math/rand"
 )
 
 // Block struct
 
 type Block struct {
-
-	Index int
-	Timestamp string
-	BPM int
-	Hash string
+	Index        int
+	Timestamp    string
+	BPM          int
+	Hash         string
 	PreviousHash string
 }
-
 
 // validates the block.  Usage is block.validate()
 
 func (b *Block) validate(previous *Block) bool {
 
-	if previous.Index +1 != b.Index {
+	if previous.Index+1 != b.Index {
 		return false
 	}
 
@@ -41,7 +45,7 @@ func (b *Block) validate(previous *Block) bool {
 
 //calculates the hash for the block.  Usage is block.calculatehash()
 
-func (b *Block)calculatehash() string {
+func (b *Block) calculatehash() string {
 
 	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PreviousHash
 
@@ -65,7 +69,7 @@ func generateBlock(prev *Block, BPM int) Block {
 
 	t := time.Now()
 
-	newBlock.Index = prev.Index +1
+	newBlock.Index = prev.Index + 1
 	newBlock.Timestamp = t.String()
 	newBlock.BPM = BPM
 	newBlock.PreviousHash = prev.Hash
@@ -73,4 +77,24 @@ func generateBlock(prev *Block, BPM int) Block {
 
 	return newBlock
 
+}
+
+func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) {
+	var rdr io.Reader
+
+	//not sure if we need, this check when we start running things
+	if randseed == 0 {
+		rdr = rand.Reader
+	} else {
+		rdr = mrand.New(mrand.NewSource(randseed))
+	}
+
+	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, rdr)
+	if err != nil {
+		return nil, err
+	}
+
+	//ill work on p2p system friday + weekend
+	//dont think itll too bad after having everything set up
+	//return host, error;
 }
