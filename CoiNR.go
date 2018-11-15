@@ -2,16 +2,15 @@ package CoiNR
 
 import (
 	"bufio"
-	"flag"
 	"context"
+	"flag"
 	"fmt"
 	"github.com/libp2p/go-libp2p-peer"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
+	ma "github.com/multiformats/go-multiaddr"
 	"log"
 	"os"
 	"sync"
-	ma "github.com/multiformats/go-multiaddr"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
-	
 	"time"
 )
 

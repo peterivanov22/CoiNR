@@ -64,29 +64,6 @@ func (b *Block) calculateHash() string {
 
 }
 
-// generates a new block from the previous block and the BPM.  Usage is var newBlock = generateBlock(*oldBlock, bpm)
-
-/*func generateBlock(prev *Block, BPM int) Block {
-
-	var newBlock Block
-
-	t := time.Now()
-
-	newBlock.Index = prev.Index + 1
-	newBlock.Timestamp = t.String()
-	newBlock.BPM = BPM
-	newBlock.PrevHash = prev.Hash
-	newBlock.Hash = newBlock.calculateHash()
-
-	return newBlock
-
-}
-*/
-
-// create a new block using previous block's hash
-//implement proof of work
-//taken from https://medium.com/@mycoralhealth/code-your-own-blockchain-mining-algorithm-in-go-82c6a71aba1f
-//ill expand on this
 
 func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
 	var newBlock Block
@@ -125,7 +102,4 @@ func isHashValid(hash string, difficulty int) bool {
 	return strings.HasPrefix(hash, prefix)
 }
 
-func proofOfWork() {
-
-}
 
