@@ -14,6 +14,7 @@ import (
 	"io"
 	"log"
 	mrand "math/rand"
+	libnet "github.com/libp2p/go-libp2p-net"
 	"net"
 	"os"
 	"strconv"
@@ -72,7 +73,7 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 
 }
 
-func handleStream(s net.Conn) {
+func handleStream(s libnet.Stream) {
 
 	log.Println("Got a new stream!")
 
