@@ -1,35 +1,21 @@
 package CoiNR
 
 import (
-	"bufio"
-	"context"
-	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
-	"flag"
 	"fmt"
+<<<<<<< HEAD
 	"io"
 	"io/ioutil"
 	"log"
 	mrand "math/rand"
 	"net"
 	"os"
+=======
+>>>>>>> 1bb2d1d76577d2f46f7df899a0dee7e668d7819f
 	"strconv"
 	"strings"
-	"sync"
 	"time"
-
-	"github.com/davecgh/go-spew/spew"
-	golog "github.com/ipfs/go-log"
-	libp2p "github.com/libp2p/go-libp2p"
-	crypto "github.com/libp2p/go-libp2p-crypto"
-	host "github.com/libp2p/go-libp2p-host"
-	net "github.com/libp2p/go-libp2p-net"
-	peer "github.com/libp2p/go-libp2p-peer"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
-	ma "github.com/multiformats/go-multiaddr"
-	gologging "github.com/whyrusleeping/go-logging"
 )
 
 const difficulty = 1
@@ -37,6 +23,7 @@ const difficulty = 1
 // Block struct
 
 type Block struct {
+<<<<<<< HEAD
 	Index        int
 	Timestamp    string
 	BPM          int
@@ -46,6 +33,15 @@ type Block struct {
 	//in real bitcoin, nonce is 4 bytes
 	//string in golang is pointer (of size 8 bytes)
 	Nonce string
+=======
+	Index      int
+	Timestamp  string
+	BPM        int
+	Hash       string
+	PrevHash   string
+	Difficulty int
+	Nonce      string
+>>>>>>> 1bb2d1d76577d2f46f7df899a0dee7e668d7819f
 }
 
 // validates the block.  Usage is block.validate()
@@ -56,11 +52,11 @@ func (b *Block) validate(previous *Block) bool {
 		return false
 	}
 
-	if previous.Hash != b.PreviousHash {
+	if previous.Hash != b.PrevHash {
 		return false
 	}
 
-	if b.calculatehash() != b.Hash {
+	if b.calculateHash() != b.Hash {
 		return false
 	}
 
@@ -68,11 +64,15 @@ func (b *Block) validate(previous *Block) bool {
 
 }
 
-//calculates the hash for the block.  Usage is block.calculatehash()
+//calculates the hash for the block.  Usage is block.calculateHash()
 
-func (b *Block) calculatehash() string {
+func (b *Block) calculateHash() string {
 
+<<<<<<< HEAD
 	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PreviousHash + b.Nonce
+=======
+	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PrevHash
+>>>>>>> 1bb2d1d76577d2f46f7df899a0dee7e668d7819f
 
 	// I looked it up, this is one of two built-in hash functions in the go standard crypto lib.
 	// This one seems good.
@@ -97,8 +97,8 @@ func (b *Block) calculatehash() string {
 	newBlock.Index = prev.Index + 1
 	newBlock.Timestamp = t.String()
 	newBlock.BPM = BPM
-	newBlock.PreviousHash = prev.Hash
-	newBlock.Hash = newBlock.calculatehash()
+	newBlock.PrevHash = prev.Hash
+	newBlock.Hash = newBlock.calculateHash()
 
 	return newBlock
 
@@ -110,7 +110,7 @@ func (b *Block) calculatehash() string {
 //taken from https://medium.com/@mycoralhealth/code-your-own-blockchain-mining-algorithm-in-go-82c6a71aba1f
 //ill expand on this
 
-func generateBlock(oldBlock Block, BPM int) Block {
+func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
 	var newBlock Block
 
 	t := time.Now()
@@ -122,16 +122,25 @@ func generateBlock(oldBlock Block, BPM int) Block {
 	newBlock.Difficulty = difficulty
 
 	for i := 0; ; i++ {
+<<<<<<< HEAD
 		hex := fmt.Sprintf("%d", i)
 		newBlock.Nonce = hex
 		if !isHashValid(calculateHash(newBlock), newBlock.Difficulty) {
 			fmt.Println(calculateHash(newBlock), " do more work!")
 			//might be unneccessary
+=======
+		hexVal := fmt.Sprintf("%x", i)
+		newBlock.Nonce = hexVal
+
+		hash := newBlock.calculateHash()
+		if !isHashValid(hash, newBlock.Difficulty) {
+			fmt.Println(hash, " do more work!")
+>>>>>>> 1bb2d1d76577d2f46f7df899a0dee7e668d7819f
 			time.Sleep(time.Second)
 			continue
 		} else {
-			fmt.Println(calculateHash(newBlock), " work done!")
-			newBlock.Hash = calculateHash(newBlock)
+			fmt.Println(hash, " work done!")
+			newBlock.Hash = hash
 			break
 		}
 
@@ -145,6 +154,7 @@ func isHashValid(hash string, difficulty int) bool {
 	return strings.HasPrefix(hash, prefix)
 }
 
+<<<<<<< HEAD
 func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) {
 	var rdr io.Reader
 
@@ -302,6 +312,8 @@ func readData(rw *bufio.ReadWriter) {
 	}
 }
 
+=======
+>>>>>>> 1bb2d1d76577d2f46f7df899a0dee7e668d7819f
 func proofOfWork() {
 
 }
