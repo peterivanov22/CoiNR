@@ -12,13 +12,13 @@ import (
 // Block struct
 
 type Block struct {
-	Index     int
-	Timestamp string
-	BPM       int
-	Hash      string
-	PrevHash  string
+	Index      int
+	Timestamp  string
+	BPM        int
+	Hash       string
+	PrevHash   string
 	Difficulty int
-	Nonce	string
+	Nonce      string
 }
 
 // validates the block.  Usage is block.validate()
@@ -117,7 +117,6 @@ func isHashValid(hash string, difficulty int) bool {
 	prefix := strings.Repeat("0", difficulty)
 	return strings.HasPrefix(hash, prefix)
 }
-
 
 func proofOfWork() {
 
