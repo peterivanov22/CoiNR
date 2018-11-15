@@ -10,6 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	mrand "math/rand"
 	"net"
@@ -31,6 +32,8 @@ import (
 	gologging "github.com/whyrusleeping/go-logging"
 )
 
+const difficulty = 1
+
 // Block struct
 
 type Block struct {
@@ -39,6 +42,10 @@ type Block struct {
 	BPM          int
 	Hash         string
 	PreviousHash string
+	Difficulty   int
+	//in real bitcoin, nonce is 4 bytes
+	//string in golang is pointer (of size 8 bytes)
+	Nonce string
 }
 
 // validates the block.  Usage is block.validate()
@@ -65,7 +72,7 @@ func (b *Block) validate(previous *Block) bool {
 
 func (b *Block) calculatehash() string {
 
-	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PreviousHash
+	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PreviousHash + b.Nonce
 
 	// I looked it up, this is one of two built-in hash functions in the go standard crypto lib.
 	// This one seems good.
@@ -111,14 +118,15 @@ func generateBlock(oldBlock Block, BPM int) Block {
 	newBlock.Index = oldBlock.Index + 1
 	newBlock.Timestamp = t.String()
 	newBlock.BPM = BPM
-	newBlock.PrevHash = oldBlock.Hash
+	newBlock.PreviousHash = oldBlock.Hash
 	newBlock.Difficulty = difficulty
 
 	for i := 0; ; i++ {
-		hex := fmt.Sprintf("%x", i)
+		hex := fmt.Sprintf("%d", i)
 		newBlock.Nonce = hex
 		if !isHashValid(calculateHash(newBlock), newBlock.Difficulty) {
 			fmt.Println(calculateHash(newBlock), " do more work!")
+			//might be unneccessary
 			time.Sleep(time.Second)
 			continue
 		} else {
@@ -131,6 +139,7 @@ func generateBlock(oldBlock Block, BPM int) Block {
 	return newBlock
 }
 
+//check if hash has correct number of zeros
 func isHashValid(hash string, difficulty int) bool {
 	prefix := strings.Repeat("0", difficulty)
 	return strings.HasPrefix(hash, prefix)
@@ -236,6 +245,7 @@ func writeData(rw *bufio.ReadWriter) {
 		}
 		newBlock := generateBlock(Blockchain[len(Blockchain)-1], bpm)
 
+		//how does validate arguments work
 		if validate(newBlock, Blockchain[len(Blockchain)-1]) {
 			mutex.Lock()
 			Blockchain = append(Blockchain, newBlock)
@@ -247,7 +257,7 @@ func writeData(rw *bufio.ReadWriter) {
 			log.Println(err)
 		}
 
-		spew.Dump(Blockchain)
+		//spew.Dump(Blockchain)
 
 		mutex.Lock()
 		rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
@@ -293,5 +303,115 @@ func readData(rw *bufio.ReadWriter) {
 }
 
 func proofOfWork() {
+
+}
+
+func main() {
+
+	//get hostnames from hosts.txt
+	//we use vdi-030, 031, 032 for now
+	var host_names [10]string
+	var host_count int = 0
+
+	file, err := os.Open("hosts.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+		host_names[host_count] = scanner.Text()
+		host_count++
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	//so the BPMs is simply the data of the block
+	currtime := time.Now()
+	genesisBlock := Block{0, currtime.String(), 0, calculateHash(genesisBlock), ""}
+
+	Blockchain = append(Blockchain, genesisBlock)
+
+	//who needs logging
+
+	// We dont most of these command line arguemtns
+	listenF := flag.Int("l", 0, "wait for incoming connections")
+	target := flag.String("d", "", "target peer to dial")
+	secio := flag.Bool("secio", false, "enable secio")
+	seed := flag.Int64("seed", 0, "set random seed for id generation")
+	flag.Parse()
+
+	if *listenF == 0 {
+		log.Fatal("Please provide a port to bind on with -l")
+	}
+
+	// Make a host that listens on the given multiaddress
+	ha, err := makeNewPeer(*listenF, *secio, *seed)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//we dont want this first part
+	if *target == "" {
+		log.Println("listening for connections")
+		// Set a stream handler on host A. /p2p/1.0.0 is
+		// a user-defined protocol name.
+		ha.SetStreamHandler("/p2p/1.0.0", handleStream)
+
+		select {} // hang forever
+		/**** This is where the listener code ends ****/
+	} else {
+		//I need to set this up to work with correct hostnames
+		ha.SetStreamHandler("/p2p/1.0.0", handleStream)
+
+		// The following code extracts target's peer ID from the
+		// given multiaddress
+		ipfsaddr, err := ma.NewMultiaddr(*target)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		pid, err := ipfsaddr.ValueForProtocol(ma.P_IPFS)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		peerid, err := peer.IDB58Decode(pid)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// Decapsulate the /ipfs/<peerID> part from the target
+		// /ip4/<a.b.c.d>/ipfs/<peer> becomes /ip4/<a.b.c.d>
+		targetPeerAddr, _ := ma.NewMultiaddr(
+			fmt.Sprintf("/ipfs/%s", peer.IDB58Encode(peerid)))
+		targetAddr := ipfsaddr.Decapsulate(targetPeerAddr)
+
+		// We have a peer ID and a targetAddr so we add it to the peerstore
+		// so LibP2P knows how to contact it
+		ha.Peerstore().AddAddr(peerid, targetAddr, pstore.PermanentAddrTTL)
+
+		log.Println("opening stream")
+		// make a new stream from host B to host A
+		// it should be handled on host A by the handler we set above because
+		// we use the same /p2p/1.0.0 protocol
+		s, err := ha.NewStream(context.Background(), peerid, "/p2p/1.0.0")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		// Create a buffered stream so that read and writes are non blocking.
+		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
+
+		// Create a thread to read and write data.
+		go writeData(rw)
+		go readData(rw)
+
+		select {} // hang forever
+
+	}
 
 }
