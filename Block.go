@@ -1,4 +1,4 @@
-package CoiNR
+package main
 
 import (
 	"crypto/sha256"

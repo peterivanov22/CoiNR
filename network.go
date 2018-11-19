@@ -1,4 +1,4 @@
-package CoiNR
+package main
 
 import (
 	"bufio"
@@ -10,12 +10,11 @@ import (
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-crypto"
 	"github.com/libp2p/go-libp2p-host"
+	libnet "github.com/libp2p/go-libp2p-net"
 	ma "github.com/multiformats/go-multiaddr"
 	"io"
 	"log"
 	mrand "math/rand"
-	libnet "github.com/libp2p/go-libp2p-net"
-	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -38,10 +37,13 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 	}
 
 	//get host names
+	/**
 	var name1 string = "vdi-linux-030.ccs."
 	var name2 string = "vdi-linux-031.ccs."
 	addr1, err := net.LookupHost(name1)
 	addr2, err := net.LookupHost(name1)
+
+	*/
 
 	//need to figure out how to set up hosts
 

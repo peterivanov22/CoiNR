@@ -1,4 +1,4 @@
-package CoiNR
+package main
 
 import (
 	"bufio"
@@ -17,7 +17,7 @@ import (
 // This is the main class
 
 // Not sure this is where this should go. Storing the global difficulty of the blocks.
-var difficulty int
+const difficulty = 1
 
 // A block chain is just a slice of blocks
 var Blockchain []Block
@@ -26,6 +26,8 @@ var Blockchain []Block
 var mutex = &sync.Mutex{}
 
 func main() {
+
+	//TODO get this to work on local vagrant machines with a hostfile
 
 	//get hostnames from hosts.txt
 	//we use vdi-030, 031, 032 for now
@@ -51,7 +53,7 @@ func main() {
 
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
-	genesisBlock := Block{0, currtime.String(), 0, nil, "", difficulty, ""}
+	genesisBlock := Block{0, currtime.String(), 0, "", "", difficulty, ""}
 	genesisBlock.Hash = genesisBlock.calculateHash()
 
 	Blockchain = append(Blockchain, genesisBlock)
@@ -135,3 +137,4 @@ func main() {
 	}
 
 }
+
