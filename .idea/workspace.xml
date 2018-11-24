@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7a3af95-e21d-4f24-98b0-f4b84cc04168" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CoiNR" beforeDir="false" afterPath="$PROJECT_DIR$/src/CoiNR" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CoiNR.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/CoiNR.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/network.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/network.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,7 +28,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="8" />
+          <entry key="go" value="15" />
           <entry key="make" value="1" />
           <entry key="makefile" value="1" />
           <entry key="txt" value="1" />
@@ -36,25 +36,26 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="8" />
+          <entry key="Go" value="15" />
           <entry key="PLAIN_TEXT" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="2470" />
+          <entry key="go" value="3243" />
           <entry key="makefile" value="139" />
           <entry key="txt" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="2470" />
+          <entry key="Go" value="3243" />
           <entry key="PLAIN_TEXT" value="150" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
         <counts>
+          <entry key=".print" value="2" />
           <entry key=".println" value="1" />
         </counts>
       </usages-collector>
@@ -62,11 +63,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/network.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="76" column="37" selection-start-line="76" selection-start-column="37" selection-end-line="76" selection-end-column="37" />
+            <state relative-caret-position="-773">
+              <caret line="72" column="62" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="62" />
               <folding>
                 <element signature="e#14#376#0" expanded="true" />
               </folding>
@@ -74,11 +75,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CoiNR.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="93" column="29" selection-start-line="93" selection-start-column="29" selection-end-line="93" selection-end-column="29" />
+            <state relative-caret-position="367">
+              <caret line="126" column="30" selection-start-line="126" selection-start-column="30" selection-end-line="126" selection-end-column="30" />
+              <folding>
+                <element signature="e#14#246#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -91,6 +95,11 @@
         <option value="Go File" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>dial attempt</find>
+    </findStrings>
   </component>
   <component name="GOROOT" path="/snap/go/3039" />
   <component name="Git.Settings">
@@ -107,6 +116,7 @@
         <option value="$PROJECT_DIR$/network.go" />
         <option value="$PROJECT_DIR$/Block.go" />
         <option value="$PROJECT_DIR$/src/network.go" />
+        <option value="$PROJECT_DIR$/src/CoiNR.go" />
       </list>
     </option>
   </component>
@@ -116,8 +126,8 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="4">
-    <option name="x" value="960" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-1" />
     <option name="y" value="24" />
     <option name="width" value="960" />
     <option name="height" value="1028" />
@@ -199,10 +209,10 @@
     </configuration>
   </component>
   <component name="ToolWindowManager">
-    <frame x="960" y="24" width="960" height="1028" extended-state="4" />
+    <frame x="-1" y="24" width="1922" height="1029" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3508772" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.3508772" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -215,7 +225,7 @@
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50053364" side_tool="true" visible="true" weight="0.32962137" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50053364" side_tool="true" weight="0.32925472" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -236,19 +246,71 @@
     <entry file="file://$PROJECT_DIR$/network.go" />
     <entry file="file://$PROJECT_DIR$/hosts.txt" />
     <entry file="file://$PROJECT_DIR$/CoiNR.go" />
-    <entry file="file://$PROJECT_DIR$/src/CoiNR.go">
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-libp2p-host/host.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="116">
-          <caret line="93" column="29" selection-start-line="93" selection-start-column="29" selection-end-line="93" selection-end-column="29" />
+        <state relative-caret-position="345">
+          <caret line="60" column="4" selection-start-line="60" selection-start-column="4" selection-end-line="60" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-libp2p/p2p/host/basic/basic_host.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="449" column="29" selection-start-line="449" selection-start-column="29" selection-end-line="449" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-libp2p-net/interface.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="161" column="6" lean-forward="true" selection-start-line="161" selection-start-column="4" selection-end-line="161" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-libp2p/p2p/net/mock/mock_peernet.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="120" column="21" lean-forward="true" selection-start-line="120" selection-start-column="21" selection-end-line="120" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-libp2p-swarm/swarm_dial.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="517">
+          <caret line="419" column="23" lean-forward="true" selection-start-line="419" selection-start-column="23" selection-end-line="419" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-libp2p-transport/transport.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/libp2p/go-tcp-transport/tcp.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="75" column="37" selection-start-line="75" selection-start-column="22" selection-end-line="75" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/network.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="76" column="37" selection-start-line="76" selection-start-column="37" selection-end-line="76" selection-end-column="37" />
+        <state relative-caret-position="-773">
+          <caret line="72" column="62" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="62" />
           <folding>
             <element signature="e#14#376#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CoiNR.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="126" column="30" selection-start-line="126" selection-start-column="30" selection-end-line="126" selection-end-column="30" />
+          <folding>
+            <element signature="e#14#246#0" expanded="true" />
           </folding>
         </state>
       </provider>

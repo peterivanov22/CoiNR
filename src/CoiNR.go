@@ -5,6 +5,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/kr/pretty"
 	"github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
@@ -25,6 +26,8 @@ var Blockchain []Block
 // seems like we need a mutex
 var mutex = &sync.Mutex{}
 
+var verboseMode = false
+
 func main() {
 
 	//TODO get this to work on local vagrant machines with a hostfile
@@ -42,7 +45,7 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		verboseLog(scanner.Text())
 		host_names[host_count] = scanner.Text()
 		host_count++
 	}
@@ -63,16 +66,18 @@ func main() {
 	// We dont most of these command line arguemtns
 	listenF := flag.Int("l", 0, "wait for incoming connections")
 	target := flag.String("d", "", "target peer to dial")
-	secio := flag.Bool("secio", false, "enable secio")
 	seed := flag.Int64("seed", 0, "set random seed for id generation")
+	verbose := flag.Bool("v", false, "turn on verbose logging")
 	flag.Parse()
 
 	if *listenF == 0 {
 		log.Fatal("Please provide a port to bind on with -l")
 	}
 
+	verboseMode = *verbose
+
 	// Make a host that listens on the given multiaddress
-	ha, err := makeNewPeer(*listenF, *secio, *seed)
+	ha, err := makeNewPeer(*listenF, *seed)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,21 +102,29 @@ func main() {
 			log.Fatalln(err)
 		}
 
+		verboseLog("Ipfsaddr:" + ipfsaddr.String())
+
 		pid, err := ipfsaddr.ValueForProtocol(ma.P_IPFS)
 		if err != nil {
 			log.Fatalln(err)
 		}
+
+		verboseLog("pid: " + pid)
 
 		peerid, err := peer.IDB58Decode(pid)
 		if err != nil {
 			log.Fatalln(err)
 		}
 
+		verboseLog("peerid: " + peerid.String())
+
 		// Decapsulate the /ipfs/<peerID> part from the target
 		// /ip4/<a.b.c.d>/ipfs/<peer> becomes /ip4/<a.b.c.d>
 		targetPeerAddr, _ := ma.NewMultiaddr(
 			fmt.Sprintf("/ipfs/%s", peer.IDB58Encode(peerid)))
 		targetAddr := ipfsaddr.Decapsulate(targetPeerAddr)
+
+		verboseLog(targetAddr)
 
 		// We have a peer ID and a targetAddr so we add it to the peerstore
 		// so LibP2P knows how to contact it
@@ -134,6 +147,13 @@ func main() {
 
 		select {} // hang forever
 
+	}
+
+}
+
+func verboseLog(message interface{}){
+	if verboseMode == true{
+		log.Println(pretty.Sprint(message))
 	}
 
 }

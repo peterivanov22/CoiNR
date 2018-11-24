@@ -3,38 +3,22 @@ package main
 import (
 	"bufio"
 	"context"
-	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
-	libp2p "github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-crypto"
+	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-host"
 	libnet "github.com/libp2p/go-libp2p-net"
 	ma "github.com/multiformats/go-multiaddr"
-	"io"
 	"log"
-	mrand "math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) {
-	var rdr io.Reader
+func makeNewPeer(listenPort int, randseed int64) (host.Host, error) {
 
-	//not sure if we need, this check when we start running things
-	if randseed == 0 {
-		rdr = rand.Reader
-	} else {
-		rdr = mrand.New(mrand.NewSource(randseed))
-	}
-
-	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, rdr)
-	if err != nil {
-		return nil, err
-	}
 
 	//get host names
 	/**
@@ -49,12 +33,13 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
-		libp2p.Identity(priv),
+		libp2p.NoSecurity,
+		libp2p.RandomIdentity,
 	}
 
-	if !secio {
-		opts = append(opts, libp2p.NoSecurity)
-	}
+	verboseLog("My Context: ")
+	verboseLog(context.Background())
+
 
 	basicHost, err := libp2p.New(context.Background(), opts...)
 	if err != nil {
@@ -69,13 +54,13 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 	// Now we can build a full multiaddress to reach this host
 	// by encapsulating both addresses:
 	addr := basicHost.Addrs()[0]
+	verboseLog(basicHost.Addrs())
+
 	fullAddr := addr.Encapsulate(hostAddr)
 	log.Printf("I am %s\n", fullAddr)
-	if secio {
-		log.Printf("Now run \"./CoiNR -l %d -d %s -secio\" on a different terminal\n", listenPort+1, fullAddr)
-	} else {
-		log.Printf("Now run \"./CoiNR -l %d -d %s\" on a different terminal\n", listenPort+1, fullAddr)
-	}
+
+	log.Printf("Now run \"./CoiNR -l %d -d %s\" on a different terminal\n", listenPort+1, fullAddr)
+
 
 	return basicHost, nil
 
