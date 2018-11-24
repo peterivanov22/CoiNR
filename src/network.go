@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/libp2p/go-libp2p"
+	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-crypto"
 	"github.com/libp2p/go-libp2p-host"
 	libnet "github.com/libp2p/go-libp2p-net"
@@ -31,7 +31,7 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 		rdr = mrand.New(mrand.NewSource(randseed))
 	}
 
-	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 1024, rdr)
+	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, rdr)
 	if err != nil {
 		return nil, err
 	}
@@ -52,10 +52,16 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 		libp2p.Identity(priv),
 	}
 
+	if !secio {
+		opts = append(opts, libp2p.NoSecurity)
+	}
+
 	basicHost, err := libp2p.New(context.Background(), opts...)
 	if err != nil {
 		return nil, err
 	}
+
+
 
 	// Build host multiaddress
 	hostAddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", basicHost.ID().Pretty()))
@@ -66,9 +72,9 @@ func makeNewPeer(listenPort int, secio bool, randseed int64) (host.Host, error) 
 	fullAddr := addr.Encapsulate(hostAddr)
 	log.Printf("I am %s\n", fullAddr)
 	if secio {
-		log.Printf("Now run \"go run CoiNR.go -l %d -d %s -secio\" on a different terminal\n", listenPort+1, fullAddr)
+		log.Printf("Now run \"./CoiNR -l %d -d %s -secio\" on a different terminal\n", listenPort+1, fullAddr)
 	} else {
-		log.Printf("Now run \"go run CoiNR.go -l %d -d %s\" on a different terminal\n", listenPort+1, fullAddr)
+		log.Printf("Now run \"./CoiNR -l %d -d %s\" on a different terminal\n", listenPort+1, fullAddr)
 	}
 
 	return basicHost, nil
