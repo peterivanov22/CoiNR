@@ -53,9 +53,18 @@ func makeNewPeer(listenPort int, randseed int64) (host.Host, error) {
 
 	// Now we can build a full multiaddress to reach this host
 	// by encapsulating both addresses:
-	addr := basicHost.Addrs()[0]
-	verboseLog(basicHost.Addrs())
 
+
+	for i := 0; i < len(basicHost.Addrs()); i++{
+		verboseLog(basicHost.Addrs()[i])
+
+		addr := basicHost.Addrs()[i]
+		fullAddr := addr.Encapsulate(hostAddr)
+		verboseLog(fullAddr.String())
+
+	}
+
+	addr := basicHost.Addrs()[0]
 	fullAddr := addr.Encapsulate(hostAddr)
 	log.Printf("I am %s\n", fullAddr)
 
