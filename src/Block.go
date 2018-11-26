@@ -76,6 +76,7 @@ func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
 	newBlock.PrevHash = oldBlock.Hash
 	newBlock.Difficulty = difficulty
 
+
 	for i := 0; ; i++ {
 
 		hexVal := fmt.Sprintf("%x", i)
@@ -83,6 +84,12 @@ func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
 
 		hash := newBlock.calculateHash()
 		if !isHashValid(hash, newBlock.Difficulty) {
+
+			// if someone else has beaten us to this block, make a new block with this data.
+			if oldBlock != Blockchain[len(Blockchain) -1] {
+				return generateBlock(Blockchain[len(Blockchain)-1], BPM, difficulty)
+			}
+
 			fmt.Println(hash, " do more work!")
 			time.Sleep(time.Second)
 			continue

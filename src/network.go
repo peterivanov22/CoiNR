@@ -17,24 +17,15 @@ import (
 	"time"
 )
 
-func makeNewPeer(listenPort int, randseed int64) (host.Host, error) {
+func makeNewPeer(listenPort int) (host.Host, error) {
 
-
-	//get host names
-	/**
-	var name1 string = "vdi-linux-030.ccs."
-	var name2 string = "vdi-linux-031.ccs."
-	addr1, err := net.LookupHost(name1)
-	addr2, err := net.LookupHost(name1)
-
-	*/
-
-	//need to figure out how to set up hosts
 
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
 		libp2p.NoSecurity,
 		libp2p.RandomIdentity,
+		libp2p.DisableRelay(),
+		//libp2p.EnableRelay(0),
 	}
 
 	verboseLog("My Context: ")
@@ -179,3 +170,15 @@ func readData(rw *bufio.ReadWriter) {
 		}
 	}
 }
+
+/**
+func startRelay(ba *basichost.BasicHost) *relay.AutoRelayHost{
+
+	dis := discovery.Discoverer()
+
+	 rh := relay.NewAutoRelayHost(context.Background(), ba, dis)
+
+	 return rh
+}
+
+*/

@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7a3af95-e21d-4f24-98b0-f4b84cc04168" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Block.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/Block.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CoiNR" beforeDir="false" afterPath="$PROJECT_DIR$/src/CoiNR" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CoiNR.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/CoiNR.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/network.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/network.go" afterDir="false" />
@@ -17,44 +19,47 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="1" />
+          <entry key="project.open.time.17" value="1" />
           <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.24" value="1" />
           <entry key="project.open.time.29" value="1" />
           <entry key="project.open.time.33" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.opened" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="15" />
+          <entry key="go" value="16" />
           <entry key="make" value="1" />
           <entry key="makefile" value="1" />
-          <entry key="txt" value="1" />
+          <entry key="txt" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="15" />
-          <entry key="PLAIN_TEXT" value="3" />
+          <entry key="Go" value="16" />
+          <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="3243" />
+          <entry key="go" value="4864" />
           <entry key="makefile" value="139" />
-          <entry key="txt" value="11" />
+          <entry key="txt" value="54" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="3243" />
-          <entry key="PLAIN_TEXT" value="150" />
+          <entry key="Go" value="4864" />
+          <entry key="PLAIN_TEXT" value="193" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
         <counts>
+          <entry key=".append" value="1" />
           <entry key=".print" value="2" />
           <entry key=".println" value="1" />
         </counts>
@@ -63,26 +68,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/network.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-773">
-              <caret line="72" column="62" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="62" />
+            <state relative-caret-position="142">
+              <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
               <folding>
-                <element signature="e#14#376#0" expanded="true" />
+                <element signature="e#14#298#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Block.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="547">
+              <caret line="92" column="47" selection-start-line="92" selection-start-column="47" selection-end-line="92" selection-end-column="47" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/hosts.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CoiNR.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="367">
-              <caret line="126" column="30" selection-start-line="126" selection-start-column="30" selection-end-line="126" selection-end-column="30" />
-              <folding>
-                <element signature="e#14#246#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="472">
+              <caret line="59" column="23" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -115,8 +135,10 @@
         <option value="$PROJECT_DIR$/CoiNR.go" />
         <option value="$PROJECT_DIR$/network.go" />
         <option value="$PROJECT_DIR$/Block.go" />
-        <option value="$PROJECT_DIR$/src/network.go" />
+        <option value="$PROJECT_DIR$/src/hosts.txt" />
+        <option value="$PROJECT_DIR$/src/Block.go" />
         <option value="$PROJECT_DIR$/src/CoiNR.go" />
+        <option value="$PROJECT_DIR$/src/network.go" />
       </list>
     </option>
   </component>
@@ -127,7 +149,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-1" />
+    <option name="x" value="960" />
     <option name="y" value="24" />
     <option name="width" value="960" />
     <option name="height" value="1028" />
@@ -212,7 +234,7 @@
     <frame x="-1" y="24" width="1922" height="1029" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.3508772" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.35485592" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -295,22 +317,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/network.go">
+    <entry file="file://$PROJECT_DIR$/src/hosts.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-773">
-          <caret line="72" column="62" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="62" />
-          <folding>
-            <element signature="e#14#376#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="30">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Block.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="547">
+          <caret line="92" column="47" selection-start-line="92" selection-start-column="47" selection-end-line="92" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CoiNR.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="126" column="30" selection-start-line="126" selection-start-column="30" selection-end-line="126" selection-end-column="30" />
+        <state relative-caret-position="472">
+          <caret line="59" column="23" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/network.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
           <folding>
-            <element signature="e#14#246#0" expanded="true" />
+            <element signature="e#14#298#0" expanded="true" />
           </folding>
         </state>
       </provider>

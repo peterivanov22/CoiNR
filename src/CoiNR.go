@@ -10,7 +10,6 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
-	"os"
 	"sync"
 	"time"
 )
@@ -30,33 +29,10 @@ var verboseMode = false
 
 func main() {
 
-	//TODO get this to work on local vagrant machines with a hostfile
-
-	//get hostnames from hosts.txt
-	//we use vdi-030, 031, 032 for now
-	var host_names [10]string
-	var host_count int = 0
-
-	file, err := os.Open("hosts.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		verboseLog(scanner.Text())
-		host_names[host_count] = scanner.Text()
-		host_count++
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
 
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
-	genesisBlock := Block{0, currtime.String(), 0, "", "", difficulty, ""}
+	genesisBlock := Block{0, currtime.String(), 0, "", "", 0, ""}
 	genesisBlock.Hash = genesisBlock.calculateHash()
 
 	Blockchain = append(Blockchain, genesisBlock)
@@ -66,7 +42,6 @@ func main() {
 	// We dont most of these command line arguemtns
 	listenF := flag.Int("l", 0, "wait for incoming connections")
 	target := flag.String("d", "", "target peer to dial")
-	seed := flag.Int64("seed", 0, "set random seed for id generation")
 	verbose := flag.Bool("v", false, "turn on verbose logging")
 	flag.Parse()
 
@@ -77,10 +52,14 @@ func main() {
 	verboseMode = *verbose
 
 	// Make a host that listens on the given multiaddress
-	ha, err := makeNewPeer(*listenF, *seed)
+	ha, err := makeNewPeer(*listenF)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	//rh := startRelay(ha)
+
+
 
 	//we dont want this first part
 	if *target == "" {
