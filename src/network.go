@@ -7,34 +7,40 @@ import (
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-crypto"
 	"github.com/libp2p/go-libp2p-host"
 	libnet "github.com/libp2p/go-libp2p-net"
 	ma "github.com/multiformats/go-multiaddr"
+	"io"
 	"log"
+	mrand "math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func makeNewPeer(listenPort int, randseed int64) (host.Host, error) {
+
+func makeNewPeer(listenPort int) (host.Host, error) {
+
+	var rdr io.Reader
+
+	rdr = mrand.New(mrand.NewSource(int64(listenPort)))
 
 
-	//get host names
-	/**
-	var name1 string = "vdi-linux-030.ccs."
-	var name2 string = "vdi-linux-031.ccs."
-	addr1, err := net.LookupHost(name1)
-	addr2, err := net.LookupHost(name1)
+	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, rdr)
 
-	*/
+
+	if err != nil {
+		return nil, err
+	}
 
 	//need to figure out how to set up hosts
 
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
 		libp2p.NoSecurity,
-		libp2p.RandomIdentity,
+		libp2p.Identity(priv),
 	}
 
 	verboseLog("My Context: ")
