@@ -16,7 +16,9 @@ type Block struct {
 
 	Index        int
 	Timestamp    string
-	BPM          int
+
+	//TODO This becomes transaction data
+	BPM          int //
 	Hash         string
 	PrevHash string
 	Difficulty   int
@@ -86,6 +88,8 @@ func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
 		if !isHashValid(hash, newBlock.Difficulty) {
 
 			// if someone else has beaten us to this block, make a new block with this data.
+
+			//TODO verify transactions that have already been committed.
 			if oldBlock != Blockchain[len(Blockchain) -1] {
 				return generateBlock(Blockchain[len(Blockchain)-1], BPM, difficulty)
 			}
@@ -108,5 +112,13 @@ func isHashValid(hash string, difficulty int) bool {
 	prefix := strings.Repeat("0", difficulty)
 	return strings.HasPrefix(hash, prefix)
 }
+
+//TODO transaction struct
+// Private Key 1
+// Private Key 2
+// Amount
+// Timestamp
+
+
 
 

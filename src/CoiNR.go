@@ -16,6 +16,8 @@ import (
 
 // This is the main class
 
+// TODO Add transaction caching
+
 // Not sure this is where this should go. Storing the global difficulty of the blocks.
 const difficulty = 1
 
@@ -43,6 +45,8 @@ func main() {
 	listenF := flag.Int("l", 0, "wait for incoming connections")
 	target := flag.String("d", "", "target peer to dial")
 	verbose := flag.Bool("v", false, "turn on verbose logging")
+	// TODO enter public key on start Required flag
+
 	flag.Parse()
 
 	if *listenF == 0 {
@@ -58,8 +62,6 @@ func main() {
 	}
 
 	//rh := startRelay(ha)
-
-
 
 	//we dont want this first part
 	if *target == "" {

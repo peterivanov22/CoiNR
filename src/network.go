@@ -79,6 +79,11 @@ func handleStream(s libnet.Stream) {
 	// stream 's' will stay open until you close it (or the other side closes it).
 }
 
+
+
+
+// TODO Update to take PublicKey1, PublicKey2, amt as a string and validate
+
 func writeData(rw *bufio.ReadWriter) {
 
 	go func() {
