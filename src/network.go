@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-host"
 	libnet "github.com/libp2p/go-libp2p-net"
@@ -75,14 +74,11 @@ func handleStream(s libnet.Stream) {
 
 	go readData(rw)
 	go writeData(rw)
+	go mineBlocks(rw)
 
 	// stream 's' will stay open until you close it (or the other side closes it).
 }
 
-
-
-
-// TODO Update to take PublicKey1, PublicKey2, amt as a string and validate
 
 func writeData(rw *bufio.ReadWriter) {
 
@@ -114,29 +110,27 @@ func writeData(rw *bufio.ReadWriter) {
 		}
 
 		sendData = strings.Replace(sendData, "\n", "", -1)
-		bpm, err := strconv.Atoi(sendData)
+
+		args := strings.Split(sendData, " ")
+
+		if len(args) != 3{
+			log.Println("not enough arguments for transaction")
+		}
+
+		amt, err := strconv.ParseFloat(args[2], 64)
+
 		if err != nil {
-			log.Fatal(err)
-		}
-		newBlock := generateBlock(Blockchain[len(Blockchain)-1], bpm, difficulty)
-
-		if newBlock.validate(&Blockchain[len(Blockchain)-1]) {
-			mutex.Lock()
-			Blockchain = append(Blockchain, newBlock)
-			mutex.Unlock()
+			log.Println("invalid amount")
 		}
 
-		bytes, err := json.Marshal(Blockchain)
-		if err != nil {
-			log.Println(err)
+		newTrans := Taction{
+			getPrivateKey(args[0]),
+			getPrivateKey(args[1]),
+			amt,
+			time.Now().String(),
 		}
 
-		spew.Dump(Blockchain)
-
-		mutex.Lock()
-		rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
-		rw.Flush()
-		mutex.Unlock()
+		pendingTransactions = append(pendingTransactions, newTrans)
 	}
 
 }
@@ -175,6 +169,8 @@ func readData(rw *bufio.ReadWriter) {
 		}
 	}
 }
+
+
 
 /**
 func startRelay(ba *basichost.BasicHost) *relay.AutoRelayHost{
