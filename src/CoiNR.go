@@ -12,13 +12,12 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 )
 
 // This is the main class
-
-// TODO Add transaction caching
 
 // Not sure this is where this should go. Storing the global difficulty of the blocks.
 const difficulty = 1
@@ -32,7 +31,6 @@ var mutex = &sync.Mutex{}
 var verboseMode = false
 
 var publicKey = ""
-var privKey = ""
 
 
 //A list of transactions we have yet to process
@@ -186,13 +184,26 @@ func mineBlocks(rw *bufio.ReadWriter){
 }
 
 
-
 func getPrivateKey(pubKey string) string{
 
 
-	return "privateKey"
+	return pubKey + "privateKey"
 }
 
+
+func getUserWallet(privKey string) float64{
+
+	var wallet float64
+
+	wallet = 0
+
+	for _, ablock := range Blockchain{
+		wallet += ablock.getWalletAmt(privKey)
+
+	}
+
+	return wallet
+}
 
 
 func verboseLog(message interface{}){
@@ -226,4 +237,19 @@ func filterCommittedTactions(tactionList []Taction) []Taction{
 	return newList
 
 }
+
+
+func transactionValidator(t Taction){
+
+	payerWallet := getUserWallet(t.PrivateKey1)
+
+	if t.isValid(payerWallet){
+		pendingTransactions = append(pendingTransactions, t)
+	} else {
+		log.Println("---   Invalid Transaction.   ---\n" +
+			"Payer " + t.PrivateKey1 + " does not have " + strconv.FormatFloat(t.Amount, 'E', -1, 64) + " CoiNR to spend.\n" +
+			"That user only has " + strconv.FormatFloat(payerWallet, 'E', -1, 64) + " in their wallet")
+	}
+}
+
 

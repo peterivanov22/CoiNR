@@ -18,7 +18,6 @@ import (
 
 func makeNewPeer(listenPort int) (host.Host, error) {
 
-
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
 		libp2p.NoSecurity,
@@ -30,13 +29,10 @@ func makeNewPeer(listenPort int) (host.Host, error) {
 	verboseLog("My Context: ")
 	verboseLog(context.Background())
 
-
 	basicHost, err := libp2p.New(context.Background(), opts...)
 	if err != nil {
 		return nil, err
 	}
-
-
 
 	// Build host multiaddress
 	hostAddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", basicHost.ID().Pretty()))
@@ -44,8 +40,7 @@ func makeNewPeer(listenPort int) (host.Host, error) {
 	// Now we can build a full multiaddress to reach this host
 	// by encapsulating both addresses:
 
-
-	for i := 0; i < len(basicHost.Addrs()); i++{
+	for i := 0; i < len(basicHost.Addrs()); i++ {
 		verboseLog(basicHost.Addrs()[i])
 
 		addr := basicHost.Addrs()[i]
@@ -59,7 +54,6 @@ func makeNewPeer(listenPort int) (host.Host, error) {
 	log.Printf("I am %s\n", fullAddr)
 
 	log.Printf("Now run \"./CoiNR -l %d -d %s\" on a different terminal\n", listenPort+1, fullAddr)
-
 
 	return basicHost, nil
 
@@ -78,7 +72,6 @@ func handleStream(s libnet.Stream) {
 
 	// stream 's' will stay open until you close it (or the other side closes it).
 }
-
 
 func writeData(rw *bufio.ReadWriter) {
 
@@ -113,7 +106,7 @@ func writeData(rw *bufio.ReadWriter) {
 
 		args := strings.Split(sendData, " ")
 
-		if len(args) != 3{
+		if len(args) != 3 {
 			log.Println("not enough arguments for transaction")
 		}
 
@@ -130,7 +123,8 @@ func writeData(rw *bufio.ReadWriter) {
 			time.Now().String(),
 		}
 
-		pendingTransactions = append(pendingTransactions, newTrans)
+		transactionValidator(newTrans)
+
 	}
 
 }
@@ -169,8 +163,6 @@ func readData(rw *bufio.ReadWriter) {
 		}
 	}
 }
-
-
 
 /**
 func startRelay(ba *basichost.BasicHost) *relay.AutoRelayHost{
