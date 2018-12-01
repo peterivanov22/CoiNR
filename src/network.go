@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-host"
 	libnet "github.com/libp2p/go-libp2p-net"
@@ -19,7 +18,6 @@ import (
 
 func makeNewPeer(listenPort int) (host.Host, error) {
 
-
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
 		libp2p.NoSecurity,
@@ -31,13 +29,10 @@ func makeNewPeer(listenPort int) (host.Host, error) {
 	verboseLog("My Context: ")
 	verboseLog(context.Background())
 
-
 	basicHost, err := libp2p.New(context.Background(), opts...)
 	if err != nil {
 		return nil, err
 	}
-
-
 
 	// Build host multiaddress
 	hostAddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", basicHost.ID().Pretty()))
@@ -45,8 +40,7 @@ func makeNewPeer(listenPort int) (host.Host, error) {
 	// Now we can build a full multiaddress to reach this host
 	// by encapsulating both addresses:
 
-
-	for i := 0; i < len(basicHost.Addrs()); i++{
+	for i := 0; i < len(basicHost.Addrs()); i++ {
 		verboseLog(basicHost.Addrs()[i])
 
 		addr := basicHost.Addrs()[i]
@@ -61,7 +55,6 @@ func makeNewPeer(listenPort int) (host.Host, error) {
 
 	log.Printf("Now run \"./CoiNR -l %d -d %s\" on a different terminal\n", listenPort+1, fullAddr)
 
-
 	return basicHost, nil
 
 }
@@ -75,14 +68,10 @@ func handleStream(s libnet.Stream) {
 
 	go readData(rw)
 	go writeData(rw)
+	go mineBlocks(rw)
 
 	// stream 's' will stay open until you close it (or the other side closes it).
 }
-
-
-
-
-// TODO Update to take PublicKey1, PublicKey2, amt as a string and validate
 
 func writeData(rw *bufio.ReadWriter) {
 
@@ -114,29 +103,28 @@ func writeData(rw *bufio.ReadWriter) {
 		}
 
 		sendData = strings.Replace(sendData, "\n", "", -1)
-		bpm, err := strconv.Atoi(sendData)
+
+		args := strings.Split(sendData, " ")
+
+		if len(args) != 3 {
+			log.Println("not enough arguments for transaction")
+		}
+
+		amt, err := strconv.ParseFloat(args[2], 64)
+
 		if err != nil {
-			log.Fatal(err)
-		}
-		newBlock := generateBlock(Blockchain[len(Blockchain)-1], bpm, difficulty)
-
-		if newBlock.validate(&Blockchain[len(Blockchain)-1]) {
-			mutex.Lock()
-			Blockchain = append(Blockchain, newBlock)
-			mutex.Unlock()
+			log.Println("invalid amount")
 		}
 
-		bytes, err := json.Marshal(Blockchain)
-		if err != nil {
-			log.Println(err)
+		newTrans := Taction{
+			getPrivateKey(args[0]),
+			getPrivateKey(args[1]),
+			amt,
+			time.Now().String(),
 		}
 
-		spew.Dump(Blockchain)
+		transactionValidator(newTrans)
 
-		mutex.Lock()
-		rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
-		rw.Flush()
-		mutex.Unlock()
 	}
 
 }

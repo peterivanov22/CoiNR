@@ -3,20 +3,21 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/kr/pretty"
 	"github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 )
 
 // This is the main class
-
-// TODO Add transaction caching
 
 // Not sure this is where this should go. Storing the global difficulty of the blocks.
 const difficulty = 1
@@ -29,12 +30,18 @@ var mutex = &sync.Mutex{}
 
 var verboseMode = false
 
+var publicKey = ""
+
+
+//A list of transactions we have yet to process
+var pendingTransactions []Taction
+
 func main() {
 
 
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
-	genesisBlock := Block{0, currtime.String(), 0, "", "", 0, ""}
+	genesisBlock := Block{0, currtime.String(), []Taction{}, "", "", 0, ""}
 	genesisBlock.Hash = genesisBlock.calculateHash()
 
 	Blockchain = append(Blockchain, genesisBlock)
@@ -45,12 +52,18 @@ func main() {
 	listenF := flag.Int("l", 0, "wait for incoming connections")
 	target := flag.String("d", "", "target peer to dial")
 	verbose := flag.Bool("v", false, "turn on verbose logging")
-	// TODO enter public key on start Required flag
+	pubKey := flag.String("p", "", "public key for the user.")
 
 	flag.Parse()
 
 	if *listenF == 0 {
 		log.Fatal("Please provide a port to bind on with -l")
+	}
+
+	if *pubKey == "" {
+		log.Fatal("Please provide a public key with -p")
+	} else {
+		publicKey = *pubKey
 	}
 
 	verboseMode = *verbose
@@ -125,6 +138,7 @@ func main() {
 		// Create a thread to read and write data.
 		go writeData(rw)
 		go readData(rw)
+		go mineBlocks(rw)
 
 		select {} // hang forever
 
@@ -132,10 +146,110 @@ func main() {
 
 }
 
+func mineBlocks(rw *bufio.ReadWriter){
+
+	for {
+
+		if len(pendingTransactions) > 1 {
+
+			validTrans := filterCommittedTactions(pendingTransactions)
+
+			newBlock := generateBlock(Blockchain[len(Blockchain)-1], validTrans, difficulty)
+
+			if newBlock.validate(&Blockchain[len(Blockchain)-1]) {
+				mutex.Lock()
+				Blockchain = append(Blockchain, newBlock)
+				mutex.Unlock()
+			}
+
+			pendingTransactions = filterCommittedTactions(pendingTransactions)
+
+			bytes, err := json.Marshal(Blockchain)
+			if err != nil {
+				log.Println(err)
+			}
+
+			spew.Dump(Blockchain)
+
+			mutex.Lock()
+			rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
+			rw.Flush()
+			mutex.Unlock()
+
+		}
+
+		time.Sleep(time.Second)
+	}
+
+}
+
+
+func getPrivateKey(pubKey string) string{
+
+
+	return pubKey + "privateKey"
+}
+
+
+func getUserWallet(privKey string) float64{
+
+	var wallet float64
+
+	wallet = 0
+
+	for _, ablock := range Blockchain{
+		wallet += ablock.getWalletAmt(privKey)
+
+	}
+
+	return wallet
+}
+
+
 func verboseLog(message interface{}){
 	if verboseMode == true{
 		log.Println(pretty.Sprint(message))
 	}
 
 }
+
+func filterCommittedTactions(tactionList []Taction) []Taction{
+
+	var newList []Taction
+
+	for _, atact := range tactionList{
+
+		found := false
+
+		for _, ablock := range Blockchain{
+			if ablock.hasTransaction(atact){
+				found = true
+			}
+
+		}
+
+		if !found {
+			newList = append(newList, atact)
+		}
+
+	}
+
+	return newList
+
+}
+
+
+func transactionValidator(t Taction){
+
+	payerWallet := getUserWallet(t.PrivateKey1)
+
+	if t.isValid(payerWallet){
+		pendingTransactions = append(pendingTransactions, t)
+	} else {
+		log.Println("---   Invalid Transaction.   ---\n" +
+			"Payer " + t.PrivateKey1 + " does not have " + strconv.FormatFloat(t.Amount, 'E', -1, 64) + " CoiNR to spend.\n" +
+			"That user only has " + strconv.FormatFloat(payerWallet, 'E', -1, 64) + " in their wallet")
+	}
+}
+
 

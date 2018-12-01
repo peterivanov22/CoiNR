@@ -1,3 +1,3 @@
 all:
-	go build CoiNR.go Block.go network.go
+	go build CoiNR.go Block.go network.go Taction.go
 

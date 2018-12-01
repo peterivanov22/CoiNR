@@ -9,18 +9,14 @@ import (
 	"time"
 )
 
-
 // Block struct
 
 type Block struct {
-
 	Index        int
 	Timestamp    string
-
-	//TODO This becomes transaction data
-	BPM          int //
+	Transactions []Taction
 	Hash         string
-	PrevHash string
+	PrevHash     string
 	Difficulty   int
 	//in real bitcoin, nonce is 4 bytes
 	//string in golang is pointer (of size 8 bytes)
@@ -51,8 +47,17 @@ func (b *Block) validate(previous *Block) bool {
 
 func (b *Block) calculateHash() string {
 
-	hashString := strconv.Itoa(b.Index) + b.Timestamp + strconv.Itoa(b.BPM) + b.PrevHash + b.Nonce
+	hashString := strconv.Itoa(b.Index) + b.Timestamp
 
+	for _, tact := range b.Transactions {
+
+		hashString += tact.PrivateKey1
+		hashString += tact.PrivateKey2
+		hashString += strconv.FormatFloat(tact.Amount, 'E', -1, 64)
+		hashString += tact.Timestamp
+	}
+
+	hashString += b.PrevHash + b.Nonce
 
 	// I looked it up, this is one of two built-in hash functions in the go standard crypto lib.
 	// This one seems good.
@@ -66,18 +71,67 @@ func (b *Block) calculateHash() string {
 
 }
 
+func (b *Block) hasTransaction(t Taction) bool {
 
-func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
+	for _, bTaction := range b.Transactions {
+		if bTaction.equals(t) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (b *Block) equals(otherBlock Block) bool {
+
+	if b.Index != otherBlock.Index {
+		return false
+	}
+
+	if b.Timestamp != otherBlock.Timestamp {
+		return false
+	}
+
+	if b.PrevHash != otherBlock.PrevHash {
+		return false
+	}
+
+	if b.Hash != otherBlock.Hash {
+		return false
+	}
+
+	if b.Difficulty != otherBlock.Difficulty {
+		return false
+	}
+
+	if b.Nonce != otherBlock.Nonce {
+		return false
+	}
+
+	for _, bTaction := range b.Transactions {
+
+		if !otherBlock.hasTransaction(bTaction) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func generateBlock(oldBlock Block, tactions []Taction, difficulty int) Block {
 	var newBlock Block
 
 	t := time.Now()
 
+	privKey := getPrivateKey(publicKey)
+
+	coinbaseTaction := Taction{"CoiNR", privKey, 1, t.String()}
+
 	newBlock.Index = oldBlock.Index + 1
 	newBlock.Timestamp = t.String()
-	newBlock.BPM = BPM
+	newBlock.Transactions = append([]Taction{coinbaseTaction}, tactions...)
 	newBlock.PrevHash = oldBlock.Hash
 	newBlock.Difficulty = difficulty
-
 
 	for i := 0; ; i++ {
 
@@ -89,9 +143,13 @@ func generateBlock(oldBlock Block, BPM int, difficulty int) Block {
 
 			// if someone else has beaten us to this block, make a new block with this data.
 
-			//TODO verify transactions that have already been committed.
-			if oldBlock != Blockchain[len(Blockchain) -1] {
-				return generateBlock(Blockchain[len(Blockchain)-1], BPM, difficulty)
+			if !oldBlock.equals(Blockchain[len(Blockchain)-1]) {
+
+				missingTactions := filterCommittedTactions(tactions)
+
+				pendingTransactions = append(pendingTransactions, missingTactions...)
+
+				return generateBlock(Blockchain[len(Blockchain)-1], pendingTransactions, difficulty)
 			}
 
 			fmt.Println(hash, " do more work!")
@@ -113,12 +171,23 @@ func isHashValid(hash string, difficulty int) bool {
 	return strings.HasPrefix(hash, prefix)
 }
 
-//TODO transaction struct
-// Private Key 1
-// Private Key 2
-// Amount
-// Timestamp
+func (b *Block) getWalletAmt(privKey string) float64 {
 
+	var wallet float64
 
+	wallet = 0
 
+	for _, trans := range b.Transactions {
+		if trans.PrivateKey2 == privKey {
+			wallet += trans.Amount
+		}
 
+		if trans.PrivateKey1 == privKey {
+			wallet -= trans.Amount
+		}
+
+	}
+
+	return wallet
+
+}
