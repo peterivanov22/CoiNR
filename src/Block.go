@@ -191,3 +191,4 @@ func (b *Block) getWalletAmt(privKey string) float64 {
 	return wallet
 
 }
+

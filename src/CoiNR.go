@@ -110,6 +110,13 @@ func main() {
 			log.Fatalln(err)
 		}
 
+		// Create a buffered stream so that read and writes are non blocking.
+		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
+
+		// Create a thread to read and write data.
+		go writeData(rw)
+		go readData(rw)
+		go mineBlocks(rw)
 		verboseLog("peerid: " + peerid.String())
 
 		// Decapsulate the /ipfs/<peerID> part from the target
@@ -132,13 +139,6 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		// Create a buffered stream so that read and writes are non blocking.
-		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
-
-		// Create a thread to read and write data.
-		go writeData(rw)
-		go readData(rw)
-		go mineBlocks(rw)
 
 		select {} // hang forever
 
