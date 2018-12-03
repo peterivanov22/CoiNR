@@ -19,9 +19,16 @@ How to run prj3:
 
 How to make a block:
 
+	The simplest way to make a new block is simply to type 'm".  This creates a transactionless block both as a demo and to seed
+	the user with a coin for future transactions.
+
+	You can type b to see the current balance of the user.
+
 	Once multiple peers are running simply enter transactions in the following pattern:
 
-	User1 User2 Amt
+	RecipientAddress Amount
+
+	4124636108792174040080326045454014111723568455219740881191984988944814167335475950164282433729603031094655804369582828686682041405207858220287632798444060 2.5
 
 	You may enter as many as you like, once the peer has enough to get started it will start forming a block. Any additional transactions
 	will be stored and put into a future block. 
@@ -30,7 +37,6 @@ How to make a block:
 Command Line Flags:
 
     -l XXX - * REQUIRED * The port that the process should listen at.
-    -p XXX - * REQUIRED * the public key of the user at this node.  Any new coinbase transactions will go to this user.
 	-d XXX - An address string provided by the first console. This will let you connect to the network. Required on all further consoles. 
 		The string should look like:
 		/ip4/127.0.0.1/tcp/10001/ipfs/QmZd7YGcGUUzffMychA7YornZxxN9kJzKujsppsDA2d3yr
