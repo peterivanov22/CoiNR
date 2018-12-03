@@ -112,12 +112,13 @@ func writeData(rw *bufio.ReadWriter) {
 
 
 		//generating new block ------------------------
-		if len(args) == 1{
+		if (sendData == "b"){
+			showBalance(getThisPublicKey())
+		}
 
-			_, err := strconv.Atoi(sendData)
-			if err != nil {
-				log.Fatal(err)
-			}
+		if (sendData == "m"){
+
+
 			newBlock := generateBlock(Blockchain[len(Blockchain)-1], nil, difficulty)
 
 
@@ -172,14 +173,11 @@ func writeData(rw *bufio.ReadWriter) {
 
 			pendingTransactions = append(pendingTransactions, newTrans)
 
+
 		}
 
 		//bad arguments---------------------
 
-
-		if len(args) != 2 {
-			log.Println("not enough arguments for transaction")
-		}
 
 
 

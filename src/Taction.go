@@ -107,12 +107,14 @@ type availableCoin struct {
 var availableCoins []availableCoin
 
 
-func (	B * Block) updateNewOwnership () {
+func (B * Block) updateNewOwnership () {
 
 	for i:=0 ; i< len(B.Transactions); i++{
 		newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tIn.prevOutIndex,
 		B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
 		availableCoins = append(availableCoins,newCoin)
+		println("NEW ADDRESS OF OWNER ", B.Transactions[i].tOut.address)
+
 	}
 }
 

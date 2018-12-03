@@ -179,8 +179,8 @@ func generateBlock(oldBlock Block, tactions []Taction, difficulty int) Block {
 		}
 
 	}
-
-
+	newBlock.updateNewOwnership()
+	newBlock.deleteOldOwnership()
 	return newBlock
 }
 

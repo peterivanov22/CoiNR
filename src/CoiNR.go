@@ -48,9 +48,6 @@ func main() {
 
 
 	publicKey := getPublicKey(privateKey)
-
-	log.Println(privateKey)
-
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
 	genesisBlock := Block{0, currtime.String(), []Taction{}, "", "", 0, ""}
@@ -172,9 +169,9 @@ func mineBlocks(rw *bufio.ReadWriter){
 
 		if len(pendingTransactions) > 1 {
 
-			validTrans := filterCommittedTactions(pendingTransactions)
+			//validTrans := filterCommittedTactions(pendingTransactions)
 
-			newBlock := generateBlock(Blockchain[len(Blockchain)-1], validTrans, difficulty)
+			newBlock := generateBlock(Blockchain[len(Blockchain)-1], pendingTransactions, difficulty)
 
 			if newBlock.validate(&Blockchain[len(Blockchain)-1]) {
 				mutex.Lock()
@@ -182,7 +179,7 @@ func mineBlocks(rw *bufio.ReadWriter){
 				mutex.Unlock()
 			}
 
-			pendingTransactions = filterCommittedTactions(pendingTransactions)
+			//pendingTransactions = filterCommittedTactions(pendingTransactions)
 
 			bytes, err := json.Marshal(Blockchain)
 			if err != nil {
@@ -195,6 +192,9 @@ func mineBlocks(rw *bufio.ReadWriter){
 			rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
 			rw.Flush()
 			mutex.Unlock()
+
+			break
+			//showBalance(getThisPublicKey())
 
 		}
 
