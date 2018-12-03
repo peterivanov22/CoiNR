@@ -88,7 +88,7 @@ func main() {
 
 	//rh := startRelay(ha)
 
-	log.Println("This hosts address is: " + publicKey)
+	log.Println("This hosts Address is: " + publicKey)
 
 	//we dont want this first part
 	if *target == "" {
