@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io"
+	"log"
 )
 
 /*
@@ -21,7 +22,6 @@ type Taction struct {
 //yeah.. ill do something more secure later
 //const privatekey = "5DB0633DDD43355F97CC15A190660A7453737BE343E503F8882D62D6C927C6DA"
 
-var privateKey = new(ec.PrivateKey)
 var block_reward = 1
 
 func generateKeys() * ec.PrivateKey {
@@ -30,6 +30,8 @@ func generateKeys() * ec.PrivateKey {
 	return privateKey
 
 }
+
+
 
 func getPublicKey (key *ec.PrivateKey)  string {
 	pubkey := key.PublicKey.X.String() + key.PublicKey.Y.String()
@@ -40,6 +42,7 @@ func getThisPublicKey ()  string {
 	pubkey := privateKey.PublicKey.X.String() + privateKey.PublicKey.Y.String()
 	return pubkey
 }
+
 
 
 
@@ -70,11 +73,15 @@ type Taction struct {
 
 func (t * Taction) SignTaction() (rs string ){
 
-
 	hash := sha256.New()
 	io.WriteString(hash, t.id)
 
-	r, _, _ := ec.Sign(rand.Reader, privateKey, hash.Sum(nil))
+	r, _, err := ec.Sign(rand.Reader, privateKey, hash.Sum(nil))
+
+	if err != nil {
+		log.Println("bad sign")
+		return ""
+	}
 
 
 	return r.String()
@@ -158,6 +165,28 @@ func  findLastUnspent (address string) availableCoin {
 		return availableCoin{}
 
 }
+
+
+func  showBalance (address string)  {
+
+
+	var temp = 0.0
+	//newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tOut,
+	//B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+
+	for j:=0 ; j< len(availableCoins); j++ {
+
+		//so far just assuming everything is in increments of 1
+		if (availableCoins[j].address == address){
+			//dirty way to delete this for now
+			temp+= availableCoins[j].amount
+		}
+
+	}
+	println("This node has: " , temp)
+
+}
+
 
 //maybe implement transaction id
 //needed for checks

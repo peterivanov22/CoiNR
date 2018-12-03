@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-host"
 	libnet "github.com/libp2p/go-libp2p-net"
@@ -109,34 +110,78 @@ func writeData(rw *bufio.ReadWriter) {
 
 		args := strings.Split(sendData, " ")
 
+
+		//generating new block ------------------------
+		if len(args) == 1{
+
+			_, err := strconv.Atoi(sendData)
+			if err != nil {
+				log.Fatal(err)
+			}
+			newBlock := generateBlock(Blockchain[len(Blockchain)-1], nil, difficulty)
+
+
+			if newBlock.validate(&Blockchain[len(Blockchain)-1]) {
+				mutex.Lock()
+				Blockchain = append(Blockchain, newBlock)
+				mutex.Unlock()
+			}
+
+			bytes, err := json.Marshal(Blockchain)
+			if err != nil {
+				log.Println(err)
+			}
+
+			spew.Dump(Blockchain)
+
+			mutex.Lock()
+			rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
+			rw.Flush()
+			mutex.Unlock()
+
+		}
+
+		//making new transaction ------------------------
+
+		if len(args) == 2{
+
+			amt, err := strconv.ParseFloat(args[1], 64)
+
+			if err != nil {
+				log.Println("invalid amount")
+			}
+
+			newTOut := tactionOut{
+				args[0],
+				amt}
+
+			newTIn := tactionIn{
+				getThisPublicKey(),
+				getThisPublicKey(),
+				0,
+				""}
+
+
+			newTrans := Taction{
+				"",
+				newTOut,
+				newTIn }
+
+			(*Taction).generateTransactionId(&newTrans)
+			newTrans.tIn.signature = (*Taction).SignTaction(&newTrans)
+
+			pendingTransactions = append(pendingTransactions, newTrans)
+
+		}
+
+		//bad arguments---------------------
+
+
 		if len(args) != 2 {
 			log.Println("not enough arguments for transaction")
 		}
 
-		amt, err := strconv.ParseFloat(args[1], 64)
 
-		if err != nil {
-			log.Println("invalid amount")
-		}
-
-		newTOut := tactionOut{
-			args[0],
-			amt}
-
-		newTIn := tactionIn{
-			getThisPublicKey(),
-			getThisPublicKey(),
-			0,
-			""}
-
-
-		newTrans := Taction{
-			"",
-			newTOut,
-			newTIn }
-
-		(*Taction).generateTransactionId(&newTrans)
-		newTrans.tIn.signature = (*Taction).SignTaction(&newTrans)
 
 		//need to broadcast this transaciton
 		//transactionValidator(newTrans)

@@ -122,6 +122,7 @@ func generateBlock(oldBlock Block, tactions []Taction, difficulty int) Block {
 
 	//privKey := getPrivateKey(publicKey)
 
+	//this transaction is reward for mining the block
 	newTOut := tactionOut{
 		getThisPublicKey(),
 		1}

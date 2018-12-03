@@ -3,14 +3,15 @@ package main
 import (
 	"bufio"
 	"context"
+	"crypto/ecdsa"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/kr/pretty"
 	"github.com/libp2p/go-libp2p-peer"
-	ma "github.com/multiformats/go-multiaddr"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
+	ma "github.com/multiformats/go-multiaddr"
 	"log"
 	"sync"
 	"time"
@@ -30,16 +31,25 @@ var mutex = &sync.Mutex{}
 var verboseMode = false
 
 var publicKey = ""
+var privateKey = generateKeys()
+
+
+func getPrivateKey () *ecdsa.PrivateKey {
+	return privateKey
+}
 
 
 //A list of transactions we have yet to process
 var pendingTransactions []Taction
 
+
 func main() {
 
 
-	//privateKey := generateKeys()
-	//publicKey := getPublicKey(privateKey)
+
+	publicKey := getPublicKey(privateKey)
+
+	log.Println(privateKey)
 
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
@@ -78,7 +88,7 @@ func main() {
 
 	//rh := startRelay(ha)
 
-	//log.Println("This hosts address is: " + publicKey)
+	log.Println("This hosts address is: " + publicKey)
 
 	//we dont want this first part
 	if *target == "" {
