@@ -43,30 +43,26 @@ func getThisPublicKey ()  string {
 	return pubkey
 }
 
-
-
-
-
 type tactionOut struct {
 
-	address string
-	amount float64
+	Address string
+	Amount  float64
 }
 
 type tactionIn struct {
 
-	address string
-	prevOutId string
-	prevOutIndex int
-	signature string
+	Address      string
+	PrevOutId    string
+	PrevOutIndex int
+	Signature    string
 
 }
 
 type Taction struct {
 
-	id string
-	tOut tactionOut
-	tIn tactionIn
+	ID   string
+	TOut tactionOut
+	TIn  tactionIn
 
 }
 
@@ -74,7 +70,7 @@ type Taction struct {
 func (t * Taction) SignTaction() (rs string ){
 
 	hash := sha256.New()
-	io.WriteString(hash, t.id)
+	io.WriteString(hash, t.ID)
 
 	r, _, err := ec.Sign(rand.Reader, privateKey, hash.Sum(nil))
 
@@ -90,10 +86,10 @@ func (t * Taction) SignTaction() (rs string ){
 
 func (t * Taction)generateTransactionId() {
 
-	temp1 := fmt.Sprintf("%f", t.tIn.prevOutIndex)
-	temp2 := fmt.Sprintf("%f", t.tOut.amount)
+	temp1 := fmt.Sprintf("%f", t.TIn.PrevOutIndex)
+	temp2 := fmt.Sprintf("%f", t.TOut.Amount)
 
-	t.id = (t.tIn.prevOutId + temp1 + t.tOut.address + temp2)
+	t.ID = (t.TIn.PrevOutId + temp1 + t.TOut.Address + temp2)
 }
 
 type availableCoin struct {
@@ -110,8 +106,8 @@ var availableCoins []availableCoin
 func (B * Block) updateNewOwnership () {
 
 	for i:=0 ; i< len(B.Transactions); i++{
-		newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tIn.prevOutIndex,
-		B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+		newCoin := availableCoin{B.Transactions[i].ID,B.Transactions[i].TIn.PrevOutIndex,
+		B.Transactions[i].TOut.Address, B.Transactions[i].TOut.Amount}
 		availableCoins = append(availableCoins,newCoin)
 		println("NEW ADDRESS OF OWNER ", B.Transactions[i].tOut.address)
 
@@ -125,22 +121,22 @@ func (B* Block) deleteOldOwnership () {
 		temp_sum := 0.0
 
 
-		//newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tOut,
-			//B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+		//newCoin := availableCoin{B.Transactions[i].ID,B.Transactions[i].TOut,
+			//B.Transactions[i].TOut.Address, B.Transactions[i].TOut.Amount}
 
 		for j:=0 ; j< len(availableCoins); j++ {
 
 			//so far just assuming everything is in increments of 1
-			if (availableCoins[j].address == B.Transactions[i].tIn.address){
+			if (availableCoins[j].address == B.Transactions[i].TIn.Address){
 				temp_sum += availableCoins[j].amount
 				//dirty way to delete this for now
 				availableCoins[j].address = "-1"
 			}
 
-			if (temp_sum == B.Transactions[i].tOut.amount){
+			if (temp_sum == B.Transactions[i].TOut.Amount){
 				break
 			}
-			//implement finding right owner and taking away right amount of coins,
+			//implement finding right owner and taking away right Amount of coins,
 			//how to consolidate multiple availablecoin for same owners
 			//can implement validation
 		}
@@ -152,8 +148,8 @@ func  findLastUnspent (address string) availableCoin {
 
 
 
-		//newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tOut,
-		//B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+		//newCoin := availableCoin{B.Transactions[i].ID,B.Transactions[i].TOut,
+		//B.Transactions[i].TOut.Address, B.Transactions[i].TOut.Amount}
 
 		for j:=0 ; j< len(availableCoins); j++ {
 
@@ -173,8 +169,8 @@ func  showBalance (address string)  {
 
 
 	var temp = 0.0
-	//newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tOut,
-	//B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+	//newCoin := availableCoin{B.Transactions[i].ID,B.Transactions[i].TOut,
+	//B.Transactions[i].TOut.Address, B.Transactions[i].TOut.Amount}
 
 	for j:=0 ; j< len(availableCoins); j++ {
 
@@ -190,7 +186,7 @@ func  showBalance (address string)  {
 }
 
 
-//maybe implement transaction id
+//maybe implement transaction ID
 //needed for checks
 
 /*
@@ -217,7 +213,7 @@ func (t *Taction) equals(otherTaction Taction) bool {
 */
 func (t *Taction) equals(otherTaction Taction) bool {
 
-	if t.id != otherTaction.id {
+	if t.ID != otherTaction.ID {
 		return false
 	}
 
@@ -228,7 +224,7 @@ func (t *Taction) equals(otherTaction Taction) bool {
 
 func (t *Taction) isValid(payerWallet float64) bool {
 
-	if (payerWallet-t.tOut.amount < 0) {
+	if (payerWallet-t.TOut.Amount < 0) {
 		return false
 	}
 

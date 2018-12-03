@@ -51,7 +51,7 @@ func (b *Block) calculateHash() string {
 
 	for _, tact := range b.Transactions {
 
-		hashString += tact.id
+		hashString += tact.ID
 	}
 
 	hashString += b.PrevHash + b.Nonce
@@ -140,7 +140,7 @@ func generateBlock(oldBlock Block, tactions []Taction, difficulty int) Block {
 		newTIn }
 
 	(*Taction).generateTransactionId(&newTrans)
-	newTrans.tIn.signature = (*Taction).SignTaction(&newTrans)
+	newTrans.TIn.Signature = (*Taction).SignTaction(&newTrans)
 
 	coinbaseTaction := newTrans
 

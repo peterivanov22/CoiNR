@@ -97,8 +97,8 @@ func writeData(rw *bufio.ReadWriter) {
 	stdReader := bufio.NewReader(os.Stdin)
 
 
-	//format is address (to which we are sending), amount
-	//each node will print its address when it launches
+	//format is Address (to which we are sending), Amount
+	//each node will print its Address when it launches
 	for {
 		fmt.Print("> ")
 		sendData, err := stdReader.ReadString('\n')
@@ -149,7 +149,7 @@ func writeData(rw *bufio.ReadWriter) {
 			amt, err := strconv.ParseFloat(args[1], 64)
 
 			if err != nil {
-				log.Println("invalid amount")
+				log.Println("invalid Amount")
 			}
 
 			newTOut := tactionOut{
@@ -169,7 +169,7 @@ func writeData(rw *bufio.ReadWriter) {
 				newTIn }
 
 			(*Taction).generateTransactionId(&newTrans)
-			newTrans.tIn.signature = (*Taction).SignTaction(&newTrans)
+			newTrans.TIn.Signature = (*Taction).SignTaction(&newTrans)
 
 			pendingTransactions = append(pendingTransactions, newTrans)
 

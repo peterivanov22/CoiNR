@@ -10,12 +10,14 @@ How to run prj3:
 	This is highly recommended for ease of testing.
 
 	The first console can simply be run using the following line:
-	./CoiNR -l <yourPort> -p <yourName>
+	./CoiNR -l <yourPort>
 
 	This first console will give you the information you need to run additional consoles.  Additional peers will be run using:
-	./CoiNR -l <yourPort> -p <yourName> -d /ip4/<PUBLIC IP>/tcp/<PortToConnect>/ipfs/<PEER ID>
+	./CoiNR -l <yourPort> -d /ip4/<PUBLIC IP>/tcp/<PortToConnect>/ipfs/<PEER ID>
 
 	You must use different ports for each client if they are running on the same machine.
+
+How to make a block:
 
 	Once multiple peers are running simply enter transactions in the following pattern:
 
@@ -23,6 +25,7 @@ How to run prj3:
 
 	You may enter as many as you like, once the peer has enough to get started it will start forming a block. Any additional transactions
 	will be stored and put into a future block. 
+
 
 Command Line Flags:
 
