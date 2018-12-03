@@ -12,7 +12,6 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -38,6 +37,9 @@ var pendingTransactions []Taction
 
 func main() {
 
+
+	privateKey := generateKeys()
+	publicKey := getPublicKey(privateKey)
 
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
@@ -75,6 +77,8 @@ func main() {
 	}
 
 	//rh := startRelay(ha)
+
+	log.Println("This hosts address is: " + publicKey)
 
 	//we dont want this first part
 	if *target == "" {
@@ -183,7 +187,7 @@ func mineBlocks(rw *bufio.ReadWriter){
 
 }
 
-
+/*
 func getPrivateKey(pubKey string) string{
 
 
@@ -204,7 +208,7 @@ func getUserWallet(privKey string) float64{
 
 	return wallet
 }
-
+*/
 
 func verboseLog(message interface{}){
 	if verboseMode == true{
@@ -239,6 +243,7 @@ func filterCommittedTactions(tactionList []Taction) []Taction{
 }
 
 
+/*
 func transactionValidator(t Taction){
 
 	payerWallet := getUserWallet(t.PrivateKey1)
@@ -251,5 +256,5 @@ func transactionValidator(t Taction){
 			"That user only has " + strconv.FormatFloat(payerWallet, 'E', -1, 64) + " in their wallet")
 	}
 }
-
+*/
 

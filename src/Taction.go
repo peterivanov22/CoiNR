@@ -1,16 +1,12 @@
 package main
 
-import(
-	"crypto"
+import (
 	ec "crypto/ecdsa"
 	"crypto/elliptic"
-	"crypto/md5"
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
-	"hash"
 	"io"
-	"math/big"
 )
 
 /*
@@ -26,13 +22,25 @@ type Taction struct {
 //const privatekey = "5DB0633DDD43355F97CC15A190660A7453737BE343E503F8882D62D6C927C6DA"
 
 var privateKey = new(ec.PrivateKey)
+var block_reward = 1
 
-func generateKeys() {
+func generateKeys() * ec.PrivateKey {
 
-	privateKey, err := ec.GenerateKey(elliptic.P256(), rand.Reader)
-
+	privateKey,_ := ec.GenerateKey(elliptic.P256(), rand.Reader)
+	return privateKey
 
 }
+
+func getPublicKey (key *ec.PrivateKey)  string {
+	pubkey := key.PublicKey.X.String() + key.PublicKey.Y.String()
+	return pubkey
+}
+
+func getThisPublicKey ()  string {
+	pubkey := privateKey.PublicKey.X.String() + privateKey.PublicKey.Y.String()
+	return pubkey
+}
+
 
 
 
@@ -44,6 +52,7 @@ type tactionOut struct {
 
 type tactionIn struct {
 
+	address string
 	prevOutId string
 	prevOutIndex int
 	signature string
@@ -59,17 +68,16 @@ type Taction struct {
 }
 
 
-func (t * Taction) SignTaction() (r *big.Int, s *big.Int ){
+func (t * Taction) SignTaction() (rs string ){
 
 
 	hash := sha256.New()
-
-
 	io.WriteString(hash, t.id)
 
-	r, s, err := ec.Sign(rand.Reader, privateKey, hash.Sum(nil))
+	r, _, _ := ec.Sign(rand.Reader, privateKey, hash.Sum(nil))
 
-	return r,s
+
+	return r.String()
 
 }
 
@@ -81,7 +89,75 @@ func (t * Taction)generateTransactionId() {
 	t.id = (t.tIn.prevOutId + temp1 + t.tOut.address + temp2)
 }
 
+type availableCoin struct {
 
+	tactionOutId string
+	tactionOutIndex int
+	address string
+	amount float64
+}
+
+var availableCoins []availableCoin
+
+
+func (	B * Block) updateNewOwnership () {
+
+	for i:=0 ; i< len(B.Transactions); i++{
+		newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tIn.prevOutIndex,
+		B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+		availableCoins = append(availableCoins,newCoin)
+	}
+}
+
+func (B* Block) deleteOldOwnership () {
+
+	for i:=0 ; i< len(B.Transactions); i++ {
+
+		temp_sum := 0.0
+
+
+		//newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tOut,
+			//B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+
+		for j:=0 ; j< len(availableCoins); j++ {
+
+			//so far just assuming everything is in increments of 1
+			if (availableCoins[j].address == B.Transactions[i].tIn.address){
+				temp_sum += availableCoins[j].amount
+				//dirty way to delete this for now
+				availableCoins[j].address = "-1"
+			}
+
+			if (temp_sum == B.Transactions[i].tOut.amount){
+				break
+			}
+			//implement finding right owner and taking away right amount of coins,
+			//how to consolidate multiple availablecoin for same owners
+			//can implement validation
+		}
+
+	}
+}
+
+func  findLastUnspent (address string) availableCoin {
+
+
+
+		//newCoin := availableCoin{B.Transactions[i].id,B.Transactions[i].tOut,
+		//B.Transactions[i].tOut.address, B.Transactions[i].tOut.amount}
+
+		for j:=0 ; j< len(availableCoins); j++ {
+
+			//so far just assuming everything is in increments of 1
+			if (availableCoins[j].address == address){
+				//dirty way to delete this for now
+				return availableCoins[j]
+			}
+
+		}
+		return availableCoin{}
+
+}
 
 //maybe implement transaction id
 //needed for checks
@@ -108,6 +184,16 @@ func (t *Taction) equals(otherTaction Taction) bool {
 	return true
 }
 */
+func (t *Taction) equals(otherTaction Taction) bool {
+
+	if t.id != otherTaction.id {
+		return false
+	}
+
+
+	return true
+}
+
 
 func (t *Taction) isValid(payerWallet float64) bool {
 

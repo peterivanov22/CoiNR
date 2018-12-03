@@ -95,6 +95,9 @@ func writeData(rw *bufio.ReadWriter) {
 
 	stdReader := bufio.NewReader(os.Stdin)
 
+
+	//format is address (to which we are sending), amount
+	//each node will print its address when it launches
 	for {
 		fmt.Print("> ")
 		sendData, err := stdReader.ReadString('\n')
@@ -106,24 +109,37 @@ func writeData(rw *bufio.ReadWriter) {
 
 		args := strings.Split(sendData, " ")
 
-		if len(args) != 3 {
+		if len(args) != 2 {
 			log.Println("not enough arguments for transaction")
 		}
 
-		amt, err := strconv.ParseFloat(args[2], 64)
+		amt, err := strconv.ParseFloat(args[1], 64)
 
 		if err != nil {
 			log.Println("invalid amount")
 		}
 
-		newTrans := Taction{
-			getPrivateKey(args[0]),
-			getPrivateKey(args[1]),
-			amt,
-			time.Now().String(),
-		}
+		newTOut := tactionOut{
+			args[0],
+			amt}
 
-		transactionValidator(newTrans)
+		newTIn := tactionIn{
+			getThisPublicKey(),
+			getThisPublicKey(),
+			0,
+			""}
+
+
+		newTrans := Taction{
+			"",
+			newTOut,
+			newTIn }
+
+		(*Taction).generateTransactionId(&newTrans)
+		newTrans.tIn.signature = (*Taction).SignTaction(&newTrans)
+
+		//need to broadcast this transaciton
+		//transactionValidator(newTrans)
 
 	}
 

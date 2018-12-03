@@ -51,10 +51,7 @@ func (b *Block) calculateHash() string {
 
 	for _, tact := range b.Transactions {
 
-		hashString += tact.PrivateKey1
-		hashString += tact.PrivateKey2
-		hashString += strconv.FormatFloat(tact.Amount, 'E', -1, 64)
-		hashString += tact.Timestamp
+		hashString += tact.id
 	}
 
 	hashString += b.PrevHash + b.Nonce
@@ -123,9 +120,28 @@ func generateBlock(oldBlock Block, tactions []Taction, difficulty int) Block {
 
 	t := time.Now()
 
-	privKey := getPrivateKey(publicKey)
+	//privKey := getPrivateKey(publicKey)
 
-	coinbaseTaction := Taction{"CoiNR", privKey, 1, t.String()}
+	newTOut := tactionOut{
+		getThisPublicKey(),
+		1}
+
+	newTIn := tactionIn{
+		"",
+		"",
+		0,
+		"" }
+
+
+	newTrans := Taction{
+		"",
+		newTOut,
+		newTIn }
+
+	(*Taction).generateTransactionId(&newTrans)
+	newTrans.tIn.signature = (*Taction).SignTaction(&newTrans)
+
+	coinbaseTaction := newTrans
 
 	newBlock.Index = oldBlock.Index + 1
 	newBlock.Timestamp = t.String()
@@ -162,6 +178,8 @@ func generateBlock(oldBlock Block, tactions []Taction, difficulty int) Block {
 		}
 
 	}
+
+
 	return newBlock
 }
 
@@ -171,6 +189,7 @@ func isHashValid(hash string, difficulty int) bool {
 	return strings.HasPrefix(hash, prefix)
 }
 
+/*
 func (b *Block) getWalletAmt(privKey string) float64 {
 
 	var wallet float64
@@ -191,4 +210,4 @@ func (b *Block) getWalletAmt(privKey string) float64 {
 	return wallet
 
 }
-
+*/
