@@ -9,8 +9,8 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/kr/pretty"
 	"github.com/libp2p/go-libp2p-peer"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
 	"log"
 	"sync"
 	"time"
@@ -38,8 +38,8 @@ var pendingTransactions []Taction
 func main() {
 
 
-	privateKey := generateKeys()
-	publicKey := getPublicKey(privateKey)
+	//privateKey := generateKeys()
+	//publicKey := getPublicKey(privateKey)
 
 	//so the BPMs is simply the data of the block
 	currtime := time.Now()
@@ -54,20 +54,20 @@ func main() {
 	listenF := flag.Int("l", 0, "wait for incoming connections")
 	target := flag.String("d", "", "target peer to dial")
 	verbose := flag.Bool("v", false, "turn on verbose logging")
-	pubKey := flag.String("p", "", "public key for the user.")
+	//pubKey := flag.String("p", "", "public key for the user.")
 
 	flag.Parse()
 
 	if *listenF == 0 {
 		log.Fatal("Please provide a port to bind on with -l")
 	}
-
+/*
 	if *pubKey == "" {
 		log.Fatal("Please provide a public key with -p")
 	} else {
 		publicKey = *pubKey
 	}
-
+*/
 	verboseMode = *verbose
 
 	// Make a host that listens on the given multiaddress
@@ -78,7 +78,7 @@ func main() {
 
 	//rh := startRelay(ha)
 
-	log.Println("This hosts address is: " + publicKey)
+	//log.Println("This hosts address is: " + publicKey)
 
 	//we dont want this first part
 	if *target == "" {
@@ -114,14 +114,8 @@ func main() {
 			log.Fatalln(err)
 		}
 
-		// Create a buffered stream so that read and writes are non blocking.
-		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
-
-		// Create a thread to read and write data.
-		go writeData(rw)
-		go readData(rw)
-		go mineBlocks(rw)
 		verboseLog("peerid: " + peerid.String())
+
 
 		// Decapsulate the /ipfs/<peerID> part from the target
 		// /ip4/<a.b.c.d>/ipfs/<peer> becomes /ip4/<a.b.c.d>
@@ -136,13 +130,25 @@ func main() {
 		ha.Peerstore().AddAddr(peerid, targetAddr, pstore.PermanentAddrTTL)
 
 		log.Println("opening stream")
-		// make a new stream from host B to host A
-		// it should be handled on host A by the handler we set above because
-		// we use the same /p2p/1.0.0 protocol
+
+
 		s, err := ha.NewStream(context.Background(), peerid, "/p2p/1.0.0")
 		if err != nil {
 			log.Fatalln(err)
 		}
+		// Create a buffered stream so that read and writes are non blocking.
+		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
+
+		// Create a thread to read and write data.
+		go writeData(rw)
+		go readData(rw)
+		go mineBlocks(rw)
+
+
+		// make a new stream from host B to host A
+		// it should be handled on host A by the handler we set above because
+		// we use the same /p2p/1.0.0 protocol
+
 
 		select {} // hang forever
 
