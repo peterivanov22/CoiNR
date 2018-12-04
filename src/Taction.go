@@ -109,6 +109,7 @@ func (B * Block) updateNewOwnership () {
 		newCoin := availableCoin{B.Transactions[i].ID,B.Transactions[i].TIn.PrevOutIndex,
 		B.Transactions[i].TOut.Address, B.Transactions[i].TOut.Amount}
 		availableCoins = append(availableCoins,newCoin)
+
 		//println("NEW ADDRESS OF OWNER ", B.Transactions[i].TOut.Address)
 
 	}

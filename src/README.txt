@@ -19,14 +19,14 @@ How to run prj3:
 
 How to make a block:
 
-	Once multiple peers are running you have the following options:
+	The simplest way to make a new block is simply to type 'm".  This creates a transactionless block both as a demo and to seed
+	the user with a coin for future transactions.
 
-	1)Type "m" and hit enter if you would like to mine a block on the current node.
-	Mining a block gives a reward of 1 coin.
+	You can type b to see the current balance of the user.
 
-    2)Type "b" and hit enter if you would like to check the balance of the current node.
+	Once multiple peers are running simply enter transactions in the following pattern:
 
-    3)Type "RecipientAddress Amt" to order a transaction
+	RecipientAddress Amount
 
 	A transaction will be created, sending the amount from the host to the recipient.
 	Not extensively tested, recommended to just use 1 for Amt.
