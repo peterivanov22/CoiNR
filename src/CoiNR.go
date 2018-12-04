@@ -173,9 +173,13 @@ func mineBlocks(rw *bufio.ReadWriter){
 
 			newBlock := generateBlock(Blockchain[len(Blockchain)-1], pendingTransactions, difficulty)
 
+
+
 			if newBlock.validate(&Blockchain[len(Blockchain)-1]) {
 				mutex.Lock()
 				Blockchain = append(Blockchain, newBlock)
+				//newBlock.updateNewOwnership()
+				//newBlock.deleteOldOwnership()
 				mutex.Unlock()
 			}
 

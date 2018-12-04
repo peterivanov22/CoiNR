@@ -19,23 +19,31 @@ How to run prj3:
 
 How to make a block:
 
-	Once multiple peers are running simply enter transactions in the following pattern:
+	Once multiple peers are running you have the following options:
 
-	User1 User2 Amt
+	1)Type "m" and hit enter if you would like to mine a block on the current node.
+	Mining a block gives a reward of 1 coin.
+
+    2)Type "b" and hit enter if you would like to check the balance of the current node.
+
+    3)Type "RecipientAddress Amt" to order a transaction
+
+	A transaction will be created, sending the amount from the host to the recipient.
+	Not extensively tested, recommended to just use 1 for Amt.
 
 	You may enter as many as you like, once the peer has enough to get started it will start forming a block. Any additional transactions
 	will be stored and put into a future block. 
+
+	The address of each node will be printed when first launched.
 
 
 Command Line Flags:
 
     -l XXX - * REQUIRED * The port that the process should listen at.
-    -p XXX - * REQUIRED * the public key of the user at this node.  Any new coinbase transactions will go to this user.
-	-d XXX - An address string provided by the first console. This will let you connect to the network. Required on all further consoles. 
+	-d XXX - An address string provided by the first console. This will let you connect to the network. Required on all further consoles.
 		The string should look like:
 		/ip4/127.0.0.1/tcp/10001/ipfs/QmZd7YGcGUUzffMychA7YornZxxN9kJzKujsppsDA2d3yr
     -v true - Verbose logging to the console. Can be enabled on multiple machines.
 
-Known issues:
    
     
